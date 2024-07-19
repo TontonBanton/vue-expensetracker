@@ -17,17 +17,32 @@ import IncomeExpenses from './components/IncomeExpenses.vue'
 import TransactionList from './components/TransactionList.vue';
 import AddTransaction from './components/AddTransaction.vue';
 
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 //For Vue Toast
 import { useToast } from 'vue-toastification';
 const toast = useToast()
 
-const transactions = ref([
+/* const transactions = ref([
     {id: 1, text: 'Item1', amount: -319.99},
     {id: 2, text: 'Salary', amount: 999.97},
     {id: 3, text: 'Item2', amount: -10},
     {id: 4, text: 'Sale', amount: 350}
 ])
+ */
+
+const transactions = ref([])
+onMounted(()=> {                                                                    //Check LocalStorage on mounting the component
+  const savedTransactions = JSON.parse(localStorage.getItem('transactions'));       //Get the parsed data from localStorage (string format)
+  if (savedTransactions) {
+    transactions.value = savedTransactions                                          //Save the data to transactions array (for javascript)
+  }
+})
+
+// Save transactions to local storage
+const saveTransactionsToLocalStorage = () => {
+  localStorage.setItem('transactions', JSON.stringify(transactions.value));        //Save the data to localStorage as string
+};
+
 
 //Get total
 const total = computed(()=> {
@@ -63,7 +78,8 @@ const handleTransactionSubmitted = (transactionData)=> {
     text: transactionData.text,
     amount: transactionData.amount
   })
-  toast.success('Transaction added')
+  saveTransactionsToLocalStorage()                              //Save to localStorage
+  toast.success('Transaction added')                            //Toast notification
 }
 const generateUniqueId = ()=> {
   return Math.floor(Math.random() * 1000000)                    //Note: Make other duplicateproof code
@@ -72,7 +88,9 @@ const generateUniqueId = ()=> {
 //Delete Emit handler - get id to be deleted from TransactionList
 const handleTransactionDeleted = (id)=> {
   transactions.value = transactions.value
-    .filter((transactArrayRow)=> transactArrayRow.id !==id)    //filter the array for row where id not equal to id passed by emit
+    .filter((transactArrayRow)=> transactArrayRow.id !==id)     //filter the array for row where id not equal to id passed by emit
+
+  saveTransactionsToLocalStorage()                              //Save to localStorage
   toast.success('Transaction deleted')
 }
 </script>
