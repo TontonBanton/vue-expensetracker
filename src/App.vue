@@ -1,10 +1,12 @@
 <template>
   <Header />
   <div class="container">
-    <Balance :total="total" />                                            <!-- Props passed -->
-    <IncomeExpenses :income="income" :expenses="expenses"/>
-    <TransactionList :transactions="transactions" />
-    <AddTransaction @transactionSubmitted="handleTransactionSubmitted" /> <!-- Emit Cumstom Event transactionSubmitted -->
+    <Balance :total="total" />                                    <!-- Props passed -->
+    <IncomeExpenses :income="income" :expenses="expenses"/>       <!-- Props passed -->
+    <TransactionList :transactions="transactions"
+      @transactionDeleted="handleTransactionDeleted"/>            <!-- Props passed and emit custom event -->
+    <AddTransaction
+      @transactionSubmitted="handleTransactionSubmitted" />       <!-- Emit Cumstom Event transactionSubmitted -->
   </div>
 </template>
 
@@ -23,8 +25,8 @@ const toast = useToast()
 const transactions = ref([
     {id: 1, text: 'Item1', amount: -319.99},
     {id: 2, text: 'Salary', amount: 999.97},
-    {id: 2, text: 'Item2', amount: -10},
-    {id: 2, text: 'Sale', amount: 350}
+    {id: 3, text: 'Item2', amount: -10},
+    {id: 4, text: 'Sale', amount: 350}
 ])
 
 //Get total
@@ -39,7 +41,7 @@ const total = computed(()=> {
 //Get Income
 const income = computed(()=> {
   return transactions.value
-    .filter((transactArrayRow)=> transactArrayRow.amount > 0)     //Add a filter for ammount greater than 0
+    .filter((transactArrayRow)=> transactArrayRow.amount > 0)     //filter the array for ammount greater than 0
     .reduce((accumulator, transactArrayRow)=> {                   //Reduce filtered amount
       return accumulator + transactArrayRow.amount
     }, 0)
@@ -48,13 +50,13 @@ const income = computed(()=> {
 //Get expenses
 const expenses = computed(()=> {
   return transactions.value
-    .filter((transactArrayRow)=> transactArrayRow.amount < 0)    //Add a filter for ammount greater less than 0
+    .filter((transactArrayRow)=> transactArrayRow.amount < 0)    //filter the array for ammount greater less than 0
     .reduce((accumulator, transactArrayRow)=> {
       return accumulator + transactArrayRow.amount
     }, 0)
 })
 
-//Emit handler - get transactinData from AddTransaction
+//Add Emit handler - get transactionData from AddTransaction
 const handleTransactionSubmitted = (transactionData)=> {
   transactions.value.push({                                      //Push emitted data to transactions array
     id: generateUniqueId(),
@@ -64,6 +66,13 @@ const handleTransactionSubmitted = (transactionData)=> {
   toast.success('Transaction added')
 }
 const generateUniqueId = ()=> {
-  return Math.floor(Math.random() * 1000000)
+  return Math.floor(Math.random() * 1000000)                    //Note: Make other duplicateproof code
+}
+
+//Delete Emit handler - get id to be deleted from TransactionList
+const handleTransactionDeleted = (id)=> {
+  transactions.value = transactions.value
+    .filter((transactArrayRow)=> transactArrayRow.id !==id)    //filter the array for row where id not equal to id passed by emit
+  toast.success('Transaction deleted')
 }
 </script>
