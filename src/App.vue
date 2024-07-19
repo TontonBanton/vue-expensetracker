@@ -16,12 +16,15 @@ import TransactionList from './components/TransactionList.vue';
 import AddTransaction from './components/AddTransaction.vue';
 
 import { ref, computed } from 'vue'
+//For Vue Toast
+import { useToast } from 'vue-toastification';
+const toast = useToast()
 
 const transactions = ref([
-    {id: 1, text: 'Item1', amount: -119.99},
+    {id: 1, text: 'Item1', amount: -319.99},
     {id: 2, text: 'Salary', amount: 999.97},
     {id: 2, text: 'Item2', amount: -10},
-    {id: 2, text: 'Sale', amount: 150}
+    {id: 2, text: 'Sale', amount: 350}
 ])
 
 //Get total
@@ -40,21 +43,27 @@ const income = computed(()=> {
     .reduce((accumulator, transactArrayRow)=> {                   //Reduce filtered amount
       return accumulator + transactArrayRow.amount
     }, 0)
-    .toFixed(2)                                                  //Fomat result to two decimal places
 })
 
 //Get expenses
 const expenses = computed(()=> {
   return transactions.value
-    .filter((transactArrayRow)=> transactArrayRow.amount < 0)     //Add a filter for ammount greater less than 0
+    .filter((transactArrayRow)=> transactArrayRow.amount < 0)    //Add a filter for ammount greater less than 0
     .reduce((accumulator, transactArrayRow)=> {
       return accumulator + transactArrayRow.amount
     }, 0)
-    .toFixed(2)
 })
 
-//Add Transaction
+//Emit handler - get transactinData from AddTransaction
 const handleTransactionSubmitted = (transactionData)=> {
-  console.log('from emit', transactionData)
+  transactions.value.push({                                      //Push emitted data to transactions array
+    id: generateUniqueId(),
+    text: transactionData.text,
+    amount: transactionData.amount
+  })
+  toast.success('Transaction added')
+}
+const generateUniqueId = ()=> {
+  return Math.floor(Math.random() * 1000000)
 }
 </script>
