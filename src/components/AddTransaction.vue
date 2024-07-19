@@ -19,15 +19,24 @@ import { ref } from 'vue'
 const text = ref('')
 const amount = ref('')
 
+//For Vue Toast
 import { useToast } from 'vue-toastification';
 const toast = useToast()
+//Emit
+const emit = defineEmits(['transactionSubmitted'])
 
 const onSubmit = ()=> {
   if (!text.value && !amount.value) {
     toast.error('Both fields must be filled')
     return
   } else {
-    console.log(text.value, amount.value)
+    //Object Data to be emitted
+    const transactionData = {
+      text: text.value,
+      amount: parseFloat(amount.value)   //Convert to float - default is string
+    }
+    emit('transactionSubmitted', transactionData)
+
     text.value = ''
     amount.value = ''
   }

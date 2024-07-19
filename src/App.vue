@@ -1,10 +1,10 @@
 <template>
   <Header />
   <div class="container">
-    <Balance :total="total" />
+    <Balance :total="total" />                                            <!-- Props passed -->
     <IncomeExpenses :income="income" :expenses="expenses"/>
     <TransactionList :transactions="transactions" />
-    <AddTransaction />
+    <AddTransaction @transactionSubmitted="handleTransactionSubmitted" /> <!-- Emit Cumstom Event transactionSubmitted -->
   </div>
 </template>
 
@@ -16,7 +16,6 @@ import TransactionList from './components/TransactionList.vue';
 import AddTransaction from './components/AddTransaction.vue';
 
 import { ref, computed } from 'vue'
-
 
 const transactions = ref([
     {id: 1, text: 'Item1', amount: -119.99},
@@ -53,4 +52,9 @@ const expenses = computed(()=> {
     }, 0)
     .toFixed(2)
 })
+
+//Add Transaction
+const handleTransactionSubmitted = (transactionData)=> {
+  console.log('from emit', transactionData)
+}
 </script>
