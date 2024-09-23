@@ -16,28 +16,23 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useToast } from 'vue-toastification';
+
+const toast = useToast()
 const text = ref('')
 const amount = ref('')
-
-//For Vue Toast
-import { useToast } from 'vue-toastification';
-const toast = useToast()
-
-const emit = defineEmits(['transactionSubmitted'])           //Declare the custom event name the component will emit.
+const emit = defineEmits(['transactionSubmitted'])
 const onSubmit = ()=> {
-  if (!text.value && !amount.value) {
-    toast.error('Both fields must be filled')
-    return
-  } else {
-    const transactionData = {                                //Data to be emitted
-      text: text.value,
-      amount: parseFloat(amount.value)                       //Convert to float - default is string
-    }
-    emit('transactionSubmitted', transactionData)            //triggering event transactionSubmitted and passing transactionData
+  //Early Exit
+  if (!text.value && !amount.value) return toast.error('Both fields must be filled')
 
-    text.value = ''
-    amount.value = ''
-  }
+  emit('transactionSubmitted', {
+    text: text.value,
+    amount: parseFloat(amount.value)
+  })
+
+  text.value = ''
+  amount.value = ''
 }
 
 </script>

@@ -12,15 +12,9 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-const props = defineProps({
-  income:{
-    type: Number,
-    required: true
-  },
-  expenses:{
-    type: Number,
-    required: true
-  }
-})
+  import { defineProps } from 'vue';
+  const props = defineProps({
+    income:{ type: Number, required: true },
+    expenses:{ type: Number, required: true }
+  })
 </script>

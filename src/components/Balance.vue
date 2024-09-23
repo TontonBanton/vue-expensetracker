@@ -4,11 +4,8 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-const props = defineProps({
-  total: {
-    type: Number,
-    required: true
-  }
-})
+  import { defineProps } from 'vue';
+  const props = defineProps({
+    total: { type: Number, required: true }
+  })
 </script>

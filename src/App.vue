@@ -28,13 +28,9 @@ onMounted(()=> {                                                                
 
 // Import the composable
 import { useTransactions } from './composables/useTransactions';
-const {
-  transactions,
-  total,
-  income,
-  expenses,
-  handleTransactionSubmitted,
-  handleTransactionDeleted,
-} = useTransactions();
+import { useHandlers } from './composables/useHandlers';
+
+const { transactions, total, income, expenses } = useTransactions();
+const { handleTransactionSubmitted, handleTransactionDeleted } = useHandlers(transactions);
 
 </script>
